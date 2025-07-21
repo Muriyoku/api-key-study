@@ -1,9 +1,18 @@
 import { checkKeyExists } from "../database/sql.database";
 
 export async function fetchHelloWorld(key: string) {
-  if(!(await checkKeyExists(key) as [{ exists: boolean}])[0].exists) {
-    return "THE KEY NO EXISTS";
-  }
-  console.log(await checkKeyExists(key));
-  return "Hello World";
+  try {
+    const keyInfo = await checkKeyExists(key) ?? [];
+    const isKeyExists = keyInfo[0]?.exists;
+
+    if(!isKeyExists) {
+      return "THE KEY NO EXISTS";
+    };
+
+    return "Hello World";
+  } catch (err: any) {
+    console.error(err.cause);
+    
+    return null;
+  };
 };

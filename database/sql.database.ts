@@ -5,7 +5,11 @@ export async function insertKey(key: string) {
 };
 
 export async function checkKeyExists(key: string) {
-  return await sql`SELECT EXISTS (
-    SELECT key FROM keys WHERE key = ${key}
-  )`
+  try {
+    return await sql`SELECT EXISTS (SELECT key FROM keys WHERE key = ${key})`;
+  } catch(err) {
+    throw new Error("An error occurred on database layer", {
+      cause: err,
+    });
+  }
 };
